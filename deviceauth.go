@@ -24,8 +24,8 @@ type DeviceAuth struct {
 	UserCode                string `json:"user_code"`
 	VerificationURI         string `json:"verification_uri,verification_url"`
 	VerificationURIComplete string `json:"verification_uri_complete,omitempty"`
-	ExpiresIn               int    `json:"expires_in,string"`
-	Interval                int    `json:"interval,string,omitempty"`
+	ExpiresIn               int    `json:"expires_in"`
+	Interval                int    `json:"interval,omitempty"`
 	raw                     map[string]interface{}
 }
 
