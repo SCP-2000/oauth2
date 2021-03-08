@@ -12,6 +12,7 @@ import (
 	"bytes"
 	"context"
 	"errors"
+	"fmt"
 	"net/http"
 	"net/url"
 	"strings"
@@ -223,7 +224,7 @@ func (c *Config) AuthDevice(ctx context.Context, opts ...AuthCodeOption) (*Devic
 // Poll does a polling to exchange an device code for a token.
 func (c *Config) Poll(ctx context.Context, da *DeviceAuth, opts ...AuthCodeOption) (*Token, error) {
 	v := url.Values{
-		"client_id": {c.ClientID},
+		"client_id":   {c.ClientID},
 		"grant_type":  {"urn:ietf:params:oauth:grant-type:device_code"},
 		"device_code": {da.DeviceCode},
 		"code":        {da.DeviceCode},
@@ -258,6 +259,12 @@ func (c *Config) Poll(ctx context.Context, da *DeviceAuth, opts ...AuthCodeOptio
 			interval += 5
 			fallthrough
 		case errAuthorizationPending:
+		}
+
+		select {
+		case <-ctx.Done():
+			return nil, fmt.Errorf("context cancelled")
+		default:
 		}
 	}
 }
